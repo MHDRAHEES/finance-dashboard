@@ -27,7 +27,15 @@ export const validatePassword = (password: string) => {
 export const validateAmount = (amount: string | number) => {
   if (!amount) return "Amount is required";
 
-  const num = Number(amount);
+  const value = String(amount).trim();
+  const amountRegex = /^\d{1,3}(,\d{3})*(\.\d+)?$|^\d+(\.\d+)?$/;
+
+  if (!amountRegex.test(value)) {
+    return "Invalid amount format";
+  }
+
+  // Remove commas before converting
+  const num = Number(value.replace(/,/g, ""));
 
   if (isNaN(num)) return "Amount must be a number";
   if (num <= 0) return "Amount must be greater than 0";

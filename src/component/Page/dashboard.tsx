@@ -62,8 +62,8 @@ export default function Dashboard() {
 
   // Chart data with proper "name" keys
   const chartData = [
-    { name: "Deposits", amount: totalDeposits, color: "#10B981" },
-    { name: "Withdrawals", amount: totalWithdrawals, color: "#EF4444" },
+    { name: "Income", amount: totalDeposits, color: "#10B981" },
+    { name: "Expense", amount: totalWithdrawals, color: "#EF4444" },
   ];
 
   const handleLogout = () => {
@@ -88,14 +88,14 @@ export default function Dashboard() {
         {/* Top Cards */}
         <div className="grid md:grid-cols-3 gap-6 mb-10">
           <div className="bg-white p-6 rounded-xl shadow-md border-l-4 border-green-500">
-            <h3 className="text-gray-500">Total Deposits</h3>
+            <h3 className="text-gray-500">Total Income</h3>
             <p className="text-2xl font-bold text-green-600 mt-2">
               ₹{totalDeposits.toLocaleString()}
             </p>
           </div>
 
           <div className="bg-white p-6 rounded-xl shadow-md border-l-4 border-red-500">
-            <h3 className="text-gray-500">Total Withdrawals</h3>
+            <h3 className="text-gray-500">Total Expense</h3>
             <p className="text-2xl font-bold text-red-600 mt-2">
               ₹{totalWithdrawals.toLocaleString()}
             </p>
@@ -115,7 +115,7 @@ export default function Dashboard() {
 
         {/* Bar Chart */}
         <div className="bg-white p-6 rounded-xl shadow-md mb-10">
-          <h3 className="text-xl font-semibold mb-4">Transaction Overview (Bar Chart)</h3>
+          <h3 className="text-xl font-semibold mb-4">Income & Expense</h3>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={chartData}>
               <CartesianGrid strokeDasharray="3 3" />
@@ -133,7 +133,7 @@ export default function Dashboard() {
 
         {/* Pie Chart */}
         <div className="bg-white p-6 rounded-xl shadow-md mb-10">
-          <h3 className="text-xl font-semibold mb-4">Transaction Overview (Pie Chart)</h3>
+          <h3 className="text-xl font-semibold mb-4">Income & Expense</h3>
 <ResponsiveContainer width="100%" height={300}>
   <PieChart>
     <Pie

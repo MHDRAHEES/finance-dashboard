@@ -1,11 +1,9 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { FiHome, FiCreditCard, FiDollarSign, FiChevronLeft, FiChevronRight } from "react-icons/fi";
-import { useSelector } from "react-redux";
-import type { RootState } from "../../Redux/store";
+import { FiHome, FiCreditCard, FiDollarSign, FiChevronLeft, FiChevronRight ,FiBarChart2} from "react-icons/fi";
 
 export default function SidebarLayout({ children }: { children: React.ReactNode }) {
-  const user = useSelector((state: RootState) => state.user.user);
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
   const [isOpen, setIsOpen] = useState(true);
   const toggleSidebar = () => setIsOpen(!isOpen);
 
@@ -13,7 +11,8 @@ export default function SidebarLayout({ children }: { children: React.ReactNode 
     { name: "Dashboard", path: "/dashboard", icon: <FiHome size={20} /> },
     { name: "Income", path: "/income", icon: <FiCreditCard size={20} /> },
     { name: "Expense", path: "/expense", icon: <FiDollarSign size={20} /> },
-    { name: "All Transactions", path: "/all-transactions", icon: <FiDollarSign size={20} /> },
+    { name: "Transaction", path: "/all_transaction", icon: <FiBarChart2  size={20} /> },
+    { name: "Report", path: "/report", icon: <FiBarChart2  size={20} /> },
   ];
 
   return (
@@ -26,7 +25,6 @@ export default function SidebarLayout({ children }: { children: React.ReactNode 
             {isOpen ? <FiChevronLeft size={20} /> : <FiChevronRight size={20} />}
           </button>
         </div>
-
         <nav className="flex-1 mt-4">
           {menuItems.map((item) => (
             <Link

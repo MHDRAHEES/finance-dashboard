@@ -6,7 +6,8 @@ import Income from "./component/Page/income"
 import ProtectedRoute from "./component/ProtectedRoute"
 import Expense from "./component/Page/expense"
 import SidebarLayout from "./component/Page/sidebar"
-import AllTransactions from "./component/transaction"
+import AllTransactions from "./component/Report/report"
+import Transaction from "./component/Page/transaction"
 function App() {
   return (
     <Routes>
@@ -15,8 +16,9 @@ function App() {
       <Route  path="/dashboard"  element={<ProtectedRoute><Dashboard /> </ProtectedRoute>}/>
       <Route  path="/income"  element={<ProtectedRoute><Income /> </ProtectedRoute>}/>
       <Route  path="/expense"  element={<ProtectedRoute><Expense /> </ProtectedRoute>}/>
-      <Route  path="/all-transactions"  element={<ProtectedRoute><AllTransactions /></ProtectedRoute>}/>
+      <Route  path="/report"  element={<ProtectedRoute><AllTransactions /></ProtectedRoute>}/>
       <Route  path="/sidebar" element={<ProtectedRoute><SidebarLayout children={undefined}/></ProtectedRoute>}/>
+      <Route  path="/all_transaction" element={<ProtectedRoute><Transaction/></ProtectedRoute>}/>
     </Routes>
   )
 }
