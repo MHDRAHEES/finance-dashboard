@@ -105,7 +105,7 @@ export default function Dashboard() {
             <h3 className="text-gray-500">Balance</h3>
             <p
               className={`text-2xl font-bold mt-2 ${
-                balance >= 0 ? "text-green-600" : "text-red-600"
+                balance >= 0 ? "text-blue-600" : "text-red-600"
               }`}
             >
               ₹{balance.toLocaleString()}
