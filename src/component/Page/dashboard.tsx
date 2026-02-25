@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { useAuth } from "../../Context/AuthContext";
 import {
   BarChart,
   Bar,
@@ -20,24 +21,26 @@ const BASE_URL = "https://699c21cf110b5b738cc1c9f1.mockapi.io";
 const COLORS = ["#10B981", "#EF4444"]; // green for deposit, red for withdrawal
 
 type Transaction = {
+  userEmail: { name: string; email: string; } | null;
   id: string;
-  type: "deposit" | "withdrawal";
+  type: "income" | "expense";
   amount: number | string;
   createdAt?: string;
 };
 
 export default function Dashboard() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
-  const user = JSON.parse(localStorage.getItem("user") || "{}");
+  const{user}=useAuth()
 
   useEffect(() => {
     fetch(`${BASE_URL}/transaction`)
       .then((res) => res.json())
       .then((data: Transaction[]) => {
         const allData = data
+        
           .map((t) => ({
             ...t,
-            type: t.type.trim() as "deposit" | "withdrawal",
+            type: t.type.trim() as "income" | "expense",
             amount: Number(t.amount),
           }))
           .sort((a, b) =>
@@ -49,13 +52,12 @@ export default function Dashboard() {
         setTransactions(allData);
       });
   }, []);
-
-  const totalDeposits = transactions
-    .filter((t) => t.type === "deposit")
+  const userdata=transactions.filter((newdata)=>newdata.userEmail===user)
+  const totalDeposits = userdata
+    .filter((t) => t.type === "income")
     .reduce((acc, curr) => acc + Number(curr.amount), 0);
-
-  const totalWithdrawals = transactions
-    .filter((t) => t.type === "withdrawal")
+  const totalWithdrawals = userdata
+    .filter((t) => t.type === "expense")
     .reduce((acc, curr) => acc + Number(curr.amount), 0);
 
   const balance = totalDeposits - totalWithdrawals;
@@ -65,7 +67,6 @@ export default function Dashboard() {
     { name: "Income", amount: totalDeposits, color: "#10B981" },
     { name: "Expense", amount: totalWithdrawals, color: "#EF4444" },
   ];
-
   const handleLogout = () => {
     localStorage.removeItem("user");
     window.location.href = "/";

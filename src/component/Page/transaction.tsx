@@ -1,102 +1,119 @@
+import { useEffect, useState } from "react";
 import { FiX } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../Context/AuthContext";
 
-export default function transaction() {
-const navigate = useNavigate();
+type TransactionType = {
+  userEmail: { name: string; email: string; } | null;
+  id: string;
+  amount: string;
+  date: string;
+  type: "income" | "expense";
+  category: string;
+};
+export default function Transaction() {
+  const {user}=useAuth();
+  const navigate = useNavigate();
+  const [transactions, setTransactions] = useState<TransactionType[]>([]);
+
+  const BASE_URL = "https://699c21cf110b5b738cc1c9f1.mockapi.io";
+
+  useEffect(() => {
+    const fetchTransactions = async () => {
+      try {
+        const res = await fetch(`${BASE_URL}/transaction`);
+        const data = await res.json();
+        setTransactions(data);
+      } catch (err) {
+        console.error("Error fetching transactions:", err);
+      }
+    };
+
+    fetchTransactions();
+  }, []);
+  const newData=transactions.filter((x)=>x.userEmail===user)
+  // Separate income & expense
+  const income = newData.filter((t) => t.type === "income");
+  const expenses = newData.filter((t) => t.type === "expense");
+
+  // Calculate totals
+  const totalIncome = income.reduce(
+    (acc, curr) => acc + Number(curr.amount),
+    0
+  );
+
+  const totalExpense = expenses.reduce(
+    (acc, curr) => acc + Number(curr.amount),
+    0
+  );
+
+  const balance = totalIncome - totalExpense;
+
   return (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-
       <div className="bg-white w-[750px] max-h-[90vh] overflow-y-auto rounded-2xl shadow-2xl p-6 relative">
 
         <button
-            onClick={() => navigate("/dashboard")}
+          onClick={() => navigate("/dashboard")}
           className="absolute top-4 right-4 text-gray-500 hover:text-black"
         >
           <FiX size={22} />
         </button>
 
-        {/* ================= INCOME ================= */}
+        {/* INCOME */}
         <h2 className="text-green-600 font-bold mb-4">INCOME</h2>
 
-        <div className="grid grid-cols-2 gap-6 text-gray-700">
-          <div className="space-y-3">
-            <Row label="His Paycheck 1" amount="$1,500.00" />
-            <Row label="Her Paycheck 1" amount="$1,500.00" />
-            <Row label="Side Hustle" amount="$500.00" />
-          </div>
-
-          <div className="space-y-3">
-            <Row label="His Paycheck 2" amount="$1,500.00" />
-            <Row label="Her Paycheck 2" amount="$1,500.00" />
-          </div>
+        <div className="space-y-2">
+          {income.map((item) => (
+            <div key={item.id} className="flex justify-between">
+              <span>{item.category}</span>
+              <span className="text-green-600">
+                ${Number(item.amount).toLocaleString()}
+              </span>
+            </div>
+          ))}
         </div>
 
-        <TotalBar label="TOTAL INCOME" amount="$6,500.00" />
-
-        {/* ================= EXPENSES ================= */}
-        <h2 className="text-green-600 font-bold mt-8 mb-4">EXPENSES</h2>
-
-        <div className="grid grid-cols-2 gap-6 text-gray-700">
-          <div className="space-y-3">
-            <Row label="Giving" amount="$650.00" />
-            <Row label="Savings" amount="$200.00" />
-            <Row label="Food" amount="$950.00" />
-            <Row label="Utilities" amount="$325.00" />
-            <Row label="Housing" amount="$1,625.00" />
-            <Row label="Transportation" amount="$250.00" />
-          </div>
-
-          <div className="space-y-3">
-            <Row label="Insurance" amount="$725.00" />
-            <Row label="Debt" amount="$400.00" />
-            <Row label="Childcare" amount="$900.00" />
-            <Row label="Miscellaneous" amount="$175.00" />
-            <Row label="Fun Money" amount="$175.00" />
-            <Row label="Entertainment" amount="$125.00" />
-          </div>
+        <div className="mt-4 font-bold flex justify-between">
+          <span>TOTAL INCOME</span>
+          <span className="text-green-600">
+            ${totalIncome.toLocaleString()}
+          </span>
         </div>
 
-        <TotalBar label="TOTAL EXPENSES" amount="$6,500.00" />
+        {/* EXPENSES */}
+        <h2 className="text-red-600 font-bold mt-8 mb-4">EXPENSES</h2>
 
-        {/* ================= SUMMARY ================= */}
-        <div className="mt-8 space-y-3">
-          <SummaryRow label="INCOME" amount="$6,500.00" />
-          <SummaryRow label="EXPENSES" amount="-$6,500.00" />
+        <div className="space-y-2">
+          {expenses.map((item) => (
+            <div key={item.id} className="flex justify-between">
+              <span>{item.category}</span>
+              <span className="text-red-600">
+                -${Number(item.amount).toLocaleString()}
+              </span>
+            </div>
+          ))}
         </div>
 
-        <TotalBar label="BALANCE" amount="$0" />
+        <div className="mt-4 font-bold flex justify-between">
+          <span>TOTAL EXPENSES</span>
+          <span className="text-red-600">
+            -${totalExpense.toLocaleString()}
+          </span>
+        </div>
+
+        {/* SUMMARY */}
+        <div className="mt-8 border-t pt-4 font-bold flex justify-between text-lg">
+          <span>BALANCE</span>
+          <span
+            className={
+              balance >= 0 ? "text-green-600" : "text-red-600"
+            }
+          >
+            ${balance.toLocaleString()}
+          </span>
+        </div>
       </div>
-    </div>
-  );
-}
-
-
-
-function Row({ label, amount }: { label: string; amount: string }) {
-  return (
-    <div className="flex justify-between border-b pb-2 text-sm">
-      <span>{label}</span>
-      <span className="font-medium">{amount}</span>
-    </div>
-  );
-}
-
-function SummaryRow({ label, amount }:{ label: string; amount: string }) {
-  return (
-    <div className="flex justify-between font-semibold">
-      <span>{label}</span>
-      <span>{amount}</span>
-    </div>
-  );
-}
-
-function TotalBar({ label, amount }: { label: string; amount: string }) {
-  return (
-    <div className="mt-4 bg-green-500 text-white flex justify-between items-center px-4 py-2 rounded-lg font-semibold">
-      <span>{label}</span>
-      <span className="bg-white text-gray-700 px-3 py-1 rounded-md text-sm">
-        {amount}
-      </span>
     </div>
   );
 }

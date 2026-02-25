@@ -84,8 +84,8 @@ export default function Withdraw() {
             Back
           </button>
 
-          <h1 className="text-3xl md:text-5xl font-bold mt-6 text-black">
-           Expense
+          <h1 className="text-3xl md:text-1xl font-bold mt-6 text-black">
+           Create Expense 
           </h1>
 
           {/* Top Validation Message */}

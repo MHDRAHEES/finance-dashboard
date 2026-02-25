@@ -1,14 +1,13 @@
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
-import { setUser } from "./Redux/userSlice"
-import { useDispatch } from "react-redux";
+import { useAuth } from "../src/Context/AuthContext";
 const BASE_URL = "https://699c21cf110b5b738cc1c9f1.mockapi.io" 
 
 export default function Login() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
-  const dispatch = useDispatch();
   const navigate = useNavigate()
+  const {login}=useAuth();
 
   const handleLogin = async (e: React.FormEvent) => {
   e.preventDefault();
@@ -30,11 +29,8 @@ export default function Login() {
       alert("Invalid password");
       return;
     }
-
-    // Remove password before storing
-    const { password: pwd, ...userSafe } = user;
-    dispatch(setUser(userSafe));
-    localStorage.setItem("user", JSON.stringify(userSafe));
+    login(user);
+    localStorage.setItem("user", JSON.stringify(user?.email));
 
     alert("Login successful 🎉");
     navigate("/dashboard");

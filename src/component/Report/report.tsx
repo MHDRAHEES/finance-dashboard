@@ -1,15 +1,19 @@
 import React, { useEffect, useState } from "react";
-import { FiArrowLeft, FiArrowUpCircle, FiArrowDownCircle } from "react-icons/fi";
+import { FiArrowLeft, FiArrowUpCircle, FiArrowDownCircle, FiEdit, FiTrash2 } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../Context/AuthContext";
 type TransactionType = {
+  userEmail: { name: string; email: string; } | null;
   id: string;
-  type: "deposit" | "withdrawal";
+  type: "income" | "expense";
   amount: number | string;
-  createdAt?: string;
+  date?: string;
+  category:string;
 };
 
 function Transaction() {
   const navigate = useNavigate();
+  const {user}=useAuth()
   const [transactions, setTransactions] = useState<TransactionType[]>([]);
   const BASE_URL = "https://699c21cf110b5b738cc1c9f1.mockapi.io";
 
@@ -21,23 +25,39 @@ function Transaction() {
         const allData = data
           .map((t) => ({ ...t, amount: Number(t.amount) }))
           .sort((a, b) =>
-            a.createdAt && b.createdAt
-              ? new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+            a.date && b.date
+              ? new Date(b.date).getTime() - new Date(a.date).getTime()
               : 0
           );
         setTransactions(allData);
       })
       .catch((err) => console.error("Error fetching transactions:", err));
   }, []);
-const totalIncome = transactions
-  .filter((t) => t.type === "deposit")
+  const newData=transactions.filter((x)=>x.userEmail===user)
+const totalIncome = newData
+  .filter((t) => t.type === "income")
   .reduce((sum, t) => sum + Number(t.amount), 0);
 
-const totalExpense = transactions
-  .filter((t) => t.type === "withdrawal")
+const totalExpense = newData
+  .filter((t) => t.type === "expense")
   .reduce((sum, t) => sum + Number(t.amount), 0);
 
 const balance = totalIncome - totalExpense;
+const handleDelete = async (id: string) => {
+  try {
+    await fetch(`${BASE_URL}/transaction/${id}`, {
+      method: "DELETE",
+    });
+
+    // Remove from UI instantly
+    setTransactions((prev) => prev.filter((t) => t.id !== id));
+  } catch (error) {
+    console.error("Delete failed:", error);
+  }
+};
+const handleEdit = (id: string) => {
+  navigate(`/edit/${id}`);
+};
   return (
     
    <div className="bg-white p-6 rounded-2xl shadow-lg">
@@ -87,21 +107,23 @@ const balance = totalIncome - totalExpense;
   </div>
 </div>
   {/* Header Section */}
-  {transactions.length === 0 && (
+  {newData.length === 0 && (
     <p className="text-gray-500 text-center py-6">
       No transactions found.
     </p>
   )}
 
   <div className="space-y-4">
-    {transactions.map((t) => (
+    {newData.map((t) => (
       <div
         key={t.id}
         className="flex justify-between items-center p-4 rounded-xl border hover:shadow-md transition"
       >
+ 
         {/* Left Side */}
         <div className="flex items-center gap-4">
-          {t.type === "deposit" ? (
+          
+          {t.type === "income" ? (
             <FiArrowUpCircle className="text-green-500 text-2xl" />
           ) : (
             <FiArrowDownCircle className="text-red-500 text-2xl" />
@@ -109,25 +131,42 @@ const balance = totalIncome - totalExpense;
 
           <div>
             <p className="font-semibold capitalize text-gray-800">
-              {t.type}
+              {t.category}
             </p>
             <p className="text-sm text-gray-500">
-              {t.createdAt}
+              {t.date}
             </p>
           </div>
         </div>
 
-        {/* Right Side */}
-        <span
-          className={`text-lg font-bold ${
-            t.type === "deposit"
-              ? "text-green-600"
-              : "text-red-600"
-          }`}
-        >
-          {t.type === "deposit" ? "+" : "-"} ₹
-          {Number(t.amount).toLocaleString()}
-        </span>
+     <div className="flex items-center gap-6">
+  <span
+    className={`text-lg font-bold ${
+      t.type === "income"
+        ? "text-green-600"
+        : "text-red-600"
+    }`}
+  >
+    {t.type === "income" ? "+" : "-"} ₹
+    {Number(t.amount).toLocaleString()}
+  </span>
+
+  <div className="flex items-center gap-3">
+    <button
+      onClick={() => handleEdit(t.id)}
+      className="text-blue-500 hover:text-blue-700 transition"
+    >
+      <FiEdit size={18} />
+    </button>
+
+    <button
+      onClick={() => handleDelete(t.id)}
+      className="text-red-500 hover:text-red-700 transition"
+    >
+      <FiTrash2 size={18} />
+    </button>
+  </div>
+</div>
       </div>
     ))}
   </div>

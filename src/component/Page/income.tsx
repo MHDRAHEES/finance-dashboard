@@ -2,23 +2,23 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { validateRequired, validateAmount } from "../Validation/validation";
 import { FiArrowLeft } from "react-icons/fi";
-
+import { useAuth } from "../../Context/AuthContext";
 export default function Withdraw() {
   const [amount, setAmount] = useState("");
   const [date, setDate] = useState("");
   const [category, setCategory] = useState("");
   const [paymentType, setPaymentType] = useState("");
-  const [description, setDescription] = useState("");
+  const [TransactionType, setTransactionType] = useState("");
   const [errors, setErrors] = useState<any>({});
   const [formErrors, setFormErrors] = useState<string[]>([]);
 
   const navigate = useNavigate();
-  const user = JSON.parse(localStorage.getItem("user") || "{}");
-  const BASE_URL = "https://699c21cf110b5b738cc1c9f1.mockapi.io/transactions";
+  const { user } = useAuth();
+  const BASE_URL = "https://699c21cf110b5b738cc1c9f1.mockapi.io/transaction";
 
   const paymentTypes = ["Cash", "Banking"];
   const incomeCategories = ["Salary", "Freelance", "Petty Cash", "other income"];
-
+  const transactionType=["income","expense"]
   const handleWithdraw = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -50,13 +50,13 @@ export default function Withdraw() {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        userId: user.id,
-        type: "withdrawal",
+        type: "income",
         amount: Number(amount.replace(/,/g, "")),
         date,
         category,
         paymentType,
-        description,
+        TransactionType,
+        userEmail: user,
       }),
     });
 
@@ -76,10 +76,9 @@ export default function Withdraw() {
             Back
           </button>
 
-          <h1 className="text-3xl md:text-5xl font-bold mt-6 text-black">
-            Income
+          <h1 className="text-3xl md:text-1xl font-bold mt-6 text-black">
+          Create Income 
           </h1>
-
           {/* Top Validation Message */}
           {formErrors.length > 0 && (
             <div className="mt-4 bg-red-100 border border-red-400 text-red-700 p-4 rounded-lg">
@@ -122,22 +121,18 @@ export default function Withdraw() {
 
             {/* Amount */}
             <div>
-              <label className="block mb-2 font-medium">Amount</label>
-              <input
-                type="text"
-                value={amount}
-                onChange={(e) => {
-                  setAmount(e.target.value);
-                  setErrors({ ...errors, amount: "" });
-                }}
-                className={`w-full p-3 rounded-lg border ${errors.amount ? "border-red-500" : "border-gray-300"
-                  }`}
-              />
-              {errors.amount && (
-                <p className="text-red-500 text-sm mt-1">{errors.amount}</p>
-              )}
+              <label className="block mb-2 font-medium">Transaction Type</label>
+              <select
+                value={TransactionType}
+                onChange={(e) => setTransactionType(e.target.value)}
+                className="w-full p-3 rounded-lg border border-gray-300">
+                  {transactionType.map((x)=>(
+                <option key={x} value={x}>
+                  {x}
+                </option>
+                ))}
+             </select>
             </div>
-
             {/* Category */}
             <div>
               <select
@@ -186,13 +181,20 @@ export default function Withdraw() {
 
             {/* Description */}
             <div className="md:col-span-2">
-              <label className="block mb-2 font-medium">Description</label>
+              <label className="block mb-2 font-medium">Amount</label>
               <input
                 type="text"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                className="w-full p-3 rounded-lg border border-gray-300"
+                value={amount}
+                onChange={(e) => {
+                  setAmount(e.target.value);
+                  setErrors({ ...errors, amount: "" });
+                }}
+                className={`w-full p-3 rounded-lg border ${errors.amount ? "border-red-500" : "border-gray-300"
+                  }`}
               />
+              {errors.amount && (
+                <p className="text-red-500 text-sm mt-1">{errors.amount}</p>
+              )}
             </div>
 
             {/* Buttons */}
