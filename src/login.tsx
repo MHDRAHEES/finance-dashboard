@@ -110,7 +110,7 @@ export default function Login() {
 
           </form>
 
-          <p className="mt-6 text-sm text-center text-gray-500">
+          {/* <p className="mt-6 text-sm text-center text-gray-500">
             Don't have an account?{" "}
             <span
               onClick={() => navigate("/register")}
@@ -118,7 +118,7 @@ export default function Login() {
             >
               Register
             </span>
-          </p>
+          </p> */}
 
         </div>
       </div>
