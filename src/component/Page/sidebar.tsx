@@ -1,5 +1,6 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { Link } from "react-router-dom";
+import { useAuth } from "../../Context/AuthContext";
 import { FiHome, FiCreditCard, FiDollarSign, FiChevronLeft, FiChevronRight ,FiBarChart2 ,FiRepeat } from "react-icons/fi";
 type Props = {
   children: ReactNode;
@@ -8,14 +9,14 @@ type Props = {
 export default function SidebarLayout({ children }: Props) {
   const [isOpen, setIsOpen] = useState(false);
 
-  const user = JSON.parse(localStorage.getItem("user") || "{}");
+  const {user} = useAuth()
 
    const menuItems = [
     { name: "Dashboard", path: "/dashboard", icon: <FiHome size={20} /> },
     { name: "Income", path: "/income", icon: <FiCreditCard size={20} /> },
     { name: "Expense", path: "/expense", icon: <FiDollarSign size={20} /> },
-    { name: "Transaction", path: "/all_transaction", icon: <FiRepeat  size={20} /> },
-    { name: "Report", path: "/report", icon: <FiBarChart2  size={20} /> },
+    { name: "Summary Report", path: "/all_transaction", icon: <FiRepeat  size={20} /> },
+    { name: "Transaction History", path: "/report", icon: <FiBarChart2  size={20} /> },
   ];
 
   const toggleSidebar = () => {
@@ -63,8 +64,8 @@ export default function SidebarLayout({ children }: Props) {
         {/* Header */}
         <div className="flex items-center justify-between p-4">
           {isOpen && (
-            <span className="font-bold text-lg">
-              {user?.name || "User"}
+            <span className="font-bold text-sm">
+              {"Finanace Manage"}
             </span>
           )}
 

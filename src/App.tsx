@@ -15,7 +15,9 @@ function App() {
       <Route path="/login" element={<Login />} />
       <Route  path="/dashboard"  element={<ProtectedRoute><Dashboard /> </ProtectedRoute>}/>
       <Route  path="/income"  element={<ProtectedRoute><Income /> </ProtectedRoute>}/>
+      <Route  path="/income/update/:id"  element={<ProtectedRoute><Income /> </ProtectedRoute>}/>
       <Route  path="/expense"  element={<ProtectedRoute><Expense /> </ProtectedRoute>}/>
+      <Route  path="/expense/update/:id"  element={<ProtectedRoute><Expense /> </ProtectedRoute>}/>
       <Route  path="/report"  element={<ProtectedRoute><AllTransactions /></ProtectedRoute>}/>
       <Route  path="/sidebar" element={<ProtectedRoute><SidebarLayout children={undefined}/></ProtectedRoute>}/>
       <Route  path="/all_transaction" element={<ProtectedRoute><Transaction/></ProtectedRoute>}/>
