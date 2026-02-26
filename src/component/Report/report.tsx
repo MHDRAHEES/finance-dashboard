@@ -35,7 +35,7 @@ function Transaction() {
       .then((res) => res.json())
       .then((data: TransactionType[]) => {
         const userData = data
-          .filter((t) => t.userEmail === user)
+          .filter((t) => t.userEmail ===user||user?.email)
           .map((t) => ({
             ...t,
             amount: Number(t.amount),

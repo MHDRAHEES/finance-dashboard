@@ -54,9 +54,9 @@ export default function Dashboard() {
   }, []);
 
   const userData = transactions.filter(
-    (t) => t.userEmail === user
+    (t) => t.userEmail === user?.email||user
   );
-console.log(userData,"lllll");
+
 
 
   // ✅ Date Filtering
@@ -191,7 +191,7 @@ console.log(userData,"lllll");
               />
               <Legend />
               <Bar dataKey="amount" barSize={50}>
-                {chartData.map((entry, index) => (
+                {chartData.map((_entry, index) => (
                   <Cell
                     key={index}
                     fill={COLORS[index]}
@@ -219,7 +219,7 @@ console.log(userData,"lllll");
                 outerRadius={100}
                 label
               >
-                {chartData.map((entry, index) => (
+                {chartData.map((_entry, index) => (
                   <Cell
                     key={index}
                     fill={COLORS[index]}

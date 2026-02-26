@@ -31,7 +31,7 @@ export default function Transaction() {
 
     fetchTransactions();
   }, []);
-  const newData=transactions.filter((x)=>x.userEmail===user)
+  const newData=transactions.filter((x)=>x.userEmail===user||user?.email)
   // Separate income & expense
   const income = newData.filter((t) => t.type === "income");
   const expenses = newData.filter((t) => t.type === "expense");

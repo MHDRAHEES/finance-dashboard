@@ -21,17 +21,11 @@ export default function Expense() {
   const [date, setDate] = useState(getTodayDate());;
   const isEditMode = Boolean(id);
 
-  const BASE_URL =
-    "https://699c21cf110b5b738cc1c9f1.mockapi.io/transaction";
+  const BASE_URL = "https://699c21cf110b5b738cc1c9f1.mockapi.io/transaction";
+   
 
   const paymentTypes = ["Cash", "Banking"];
-  const incomeCategories = [
-    "Salary",
-    "Freelance",
-    "Petty Cash",
-    "other income",
-  ];
-
+  const incomeCategories = ["Shopping, Entertainment ","Food & Dining ","Rent","Utilities "," Transportation ","Healthcare ","Education","Other Expense "]
   const transactionTypes = ["income", "expense"];
 
   // ✅ LOAD DATA WHEN EDITING
@@ -119,7 +113,7 @@ export default function Expense() {
           </button>
 
           <h1 className="text-2xl font-bold mt-6">
-            {isEditMode ? "Update Income" : "Create Income"}
+            {isEditMode ? "Update Expense" : "Create Expense"}
           </h1>
 
           {formErrors.length > 0 && (
@@ -203,6 +197,7 @@ export default function Expense() {
                 onChange={(e) => setAmount(e.target.value)}
                 className="w-full p-3 rounded-lg border"
               />
+                {errors.amount && <p className="text-red-500">{errors.amount}</p>}
             </div>
 
             {/* Buttons */}

@@ -204,6 +204,7 @@ const [date, setDate] = useState(getTodayDate());;
                 onChange={(e) => setAmount(e.target.value)}
                 className="w-full p-3 rounded-lg border"
               />
+              {errors.amount && <p className="text-red-500">{errors.amount}</p>}
             </div>
 
             {/* Buttons */}

@@ -1,6 +1,5 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { Link } from "react-router-dom";
-import { useAuth } from "../../Context/AuthContext";
 import { FiHome, FiCreditCard, FiDollarSign, FiChevronLeft, FiChevronRight ,FiBarChart2 ,FiRepeat } from "react-icons/fi";
 type Props = {
   children: ReactNode;
@@ -9,7 +8,7 @@ type Props = {
 export default function SidebarLayout({ children }: Props) {
   const [isOpen, setIsOpen] = useState(false);
 
-  const {user} = useAuth()
+
 
    const menuItems = [
     { name: "Dashboard", path: "/dashboard", icon: <FiHome size={20} /> },
